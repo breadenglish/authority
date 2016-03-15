@@ -43,34 +43,35 @@
 FROM
   `walkthetalktech`.`sys_resource` parent
 INNER JOIN  `walkthetalktech`.`sys_resource`  child ON child.`resource_parent_id`=parent.`id`
-<trim prefix="where" prefixOverrides="AND |OR " suffixOverrides="," >
+<trim prefix="where" prefixOverrides="AND |OR " >
+	parent.`resource_type`=1 AND child.`resource_type`=1
 	<if test="id != null">
-  		parent.`id`=#{id},
+  		AND parent.`id`=#{id}
   	</if>
-  	<if test="resourceName !=null">
-  		AND parent.`resource_name` LIKE CONCAT(CONCAT('%', #{resourceName}), '%'),
+  	<if test="resourceName !=null and resourceName !=''">
+  		AND parent.`resource_name` LIKE CONCAT(CONCAT('%', #{resourceName}), '%')
   	</if>
-  	<if test="resourcePrefix != null">
-  		AND parent.`resource_prefix` LIKE CONCAT(CONCAT('%', #{resourcePrefix}), '%'),
+  	<if test="resourcePrefix != null and resourcePrefix !=''">
+  		AND parent.`resource_prefix` LIKE CONCAT(CONCAT('%', #{resourcePrefix}), '%')
   	</if>
-  	<if test="resourceLink != null">
-  		AND parent.`resource_link` LIKE CONCAT(CONCAT('%', #{resourceLink}), '%'),
+  	<if test="resourceLink != null and resourceLink !=''">
+  		AND parent.`resource_link` LIKE CONCAT(CONCAT('%', #{resourceLink}), '%')
   	</if>
-  	<if test="resourceDescription != null">
-  		AND parent.`resource_description` LIKE CONCAT(CONCAT('%', #{resourceDescription}), '%'),
+  	<if test="resourceDescription != null and resourceDescription !=''">
+  		AND parent.`resource_description` LIKE CONCAT(CONCAT('%', #{resourceDescription}), '%')
   	</if>
   	<if test="isDel != null">
-  		AND parent.`is_del`=#{isDel},
+  		AND parent.`is_del`=#{isDel}
   	</if>
   	<if test="beginDate != null">
-  		AND parent.`create_time` <![CDATA[ >= ]]> #{beginDate},
+  		AND parent.`create_time` <![CDATA[ >= ]]> #{beginDate}
   	</if>
   	<if test="endDate != null">
-  		AND parent.`create_time` <![CDATA[ <= ]]>#{endDate},
+  		AND parent.`create_time` <![CDATA[ <= ]]>#{endDate}
   	</if>
 </trim>
   	</select>
-<select id="selectSysResourceListByRoleId" resultMap="baseMap" parameterType="java.lang.Long">
+<select id="selectSysResourceListByRoleIdAndSysResourceType" resultMap="baseMap" parameterType="java.util.Map">
 	SELECT 
   sys_resource.`id`,
   sys_resource.`resource_name`,
@@ -86,6 +87,13 @@ INNER JOIN  `walkthetalktech`.`sys_resource`  child ON child.`resource_parent_id
  FROM
   `resource_role`
 INNER JOIN sys_resource ON sys_resource.`id`=resource_role.`resource_id`
-WHERE resource_role.`role_id` = #{roleId}
+<trim prefix="where" prefixOverrides="AND |OR " suffixOverrides="," >
+<if test="roleId !=null">
+resource_role.`role_id` = #{roleInfoId}
+</if>
+<if test="sysResourceType !=null">
+AND sys_resource.`resource_type` = #{sysResourceType}
+</if>
+</trim>
 </select>
 </mapper>

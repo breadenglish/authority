@@ -1,6 +1,7 @@
 package com.walkthetalktech.authority.realm;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
@@ -14,21 +15,37 @@ import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.walkthetalktech.authority.service.authority.IPermissionService;
+import com.walkthetalktech.authority.aspect.AuthorityAspect;
+import com.walkthetalktech.authority.model.authority.RoleInfo;
+import com.walkthetalktech.authority.service.authority.IRoleInfoService;
 import com.walkthetalktech.authority.service.users.IUserInfoService;
 
 public class AuthorityRealm extends AuthorizingRealm {
+	
+	private static Logger logger = LoggerFactory.getLogger(AuthorityAspect.class);
+	
+	@Autowired
+	private IRoleInfoService roleInfoService;
 
 	@Override
 	protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
-		System.out.println("开始授权");
+		logger.info("AUTHORITY_SYSTEM------------------>开始授权.");
 		String account=(String)principals.getPrimaryPrincipal();
-		SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
+		logger.info("AUTHORITY_SYSTEM------------------>用户账户:"+account);
+		List<RoleInfo> roleInfoList=roleInfoService.findRoleInfoByUserAccount(account);
+		logger.info("AUTHORITY_SYSTEM------------------>用户角色列表:"+roleInfoList);
 		Set<String> roleSet = new HashSet<String>();
-		roleSet.add("user:create");
-		roleSet.add("user:view");
+		
+		if(null!=roleInfoList){
+			for (RoleInfo roleInfo : roleInfoList) {
+				roleSet.add(roleInfo.getRolePrefix());
+			}
+		}
+		SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
 		info.setStringPermissions(roleSet);
 		return info;
 	}
@@ -38,12 +55,12 @@ public class AuthorityRealm extends AuthorizingRealm {
 		// 获取用户的身份验证信息
 		String username = (String) token.getPrincipal();
 		String password = new String((char[]) token.getCredentials());
-		if (StringUtils.isBlank(username)||!username.equals("accp")) {
-			System.out.println("用户名不正确");
+		if (StringUtils.isBlank(username)||!username.equals("admin")) {
+			logger.info("AUTHORITY_SYSTEM------------------>账户不正确");
 			throw new UnknownAccountException();
 		}
-		if (StringUtils.isBlank(password)||!password.equals("admin")) {
-			System.out.println("密码不正确");
+		if (StringUtils.isBlank(password)||!password.equals("hohoTECH123")) {
+			logger.info("AUTHORITY_SYSTEM------------------>密码不正确");
 			throw new IncorrectCredentialsException();
 		}
 		return new SimpleAuthenticationInfo(username, password, getName());

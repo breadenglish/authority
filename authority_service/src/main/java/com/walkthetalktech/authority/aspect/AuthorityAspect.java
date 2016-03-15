@@ -7,9 +7,11 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import com.walkthetalktech.authority.annotation.CheckPermissions;
+import com.walkthetalktech.authority.annotation.CheckRoles;
 import com.walkthetalktech.authority.model.users.UserInfo;
 
 import net.sf.json.JSONObject;
@@ -18,7 +20,7 @@ import net.sf.json.JSONObject;
 @Aspect
 public class AuthorityAspect {
 	
-	
+	private static Logger logger = LoggerFactory.getLogger(AuthorityAspect.class);
 
 	/**检查权限字符串user:create之类
 	 * @return 将执行结果进行返回
@@ -38,22 +40,22 @@ public class AuthorityAspect {
 		return jsonObject;
 	}
 	
-	@Around("execution(* login*(com.walkthetalktech.authority.model.users.UserInfo))&&@annotation(checkPermissions)&&args(userInfo))")
-	public JSONObject checkLogin(ProceedingJoinPoint pjp,CheckPermissions checkPermissions,UserInfo userInfo) throws Throwable{
+	@Around("execution(* login*(com.walkthetalktech.authority.model.users.UserInfo))&&@annotation(checkRoles)&&args(userInfo))")
+	public JSONObject checkLogin(ProceedingJoinPoint pjp,CheckRoles checkRoles,UserInfo userInfo) throws Throwable{
 		String userName=userInfo.getAccount();
 		String password=userInfo.getPassword();
 		boolean isPermission=false;
-		System.out.println("权限验证");
+		logger.info("AUTHORITY_SYSTEM------------------>登录权限验证");
 		Subject currentUser=SecurityUtils.getSubject();
-		System.out.println("用户名:"+userName);
-		System.out.println("密码:"+password);
-		System.out.println("要求的权限:"+checkPermissions.permissions());
+		logger.info("AUTHORITY_SYSTEM------------------>用户名:"+userName);
+		logger.info("AUTHORITY_SYSTEM------------------>密码:"+password);
+		logger.info("AUTHORITY_SYSTEM------------------>要求的角色:"+checkRoles.roles());
 		UsernamePasswordToken token=new UsernamePasswordToken(userName,password);
 		currentUser.login(token);
-		if(null!=checkPermissions&&currentUser.isAuthenticated()){
-			String[] permissionArray=checkPermissions.permissions();
-			for (String permission : permissionArray) {
-				if(currentUser.isPermitted(permission)){
+		if(null!=checkRoles&&currentUser.isAuthenticated()){
+			String[] rolesArray=checkRoles.roles();
+			for (String role : rolesArray) {
+				if(currentUser.isPermitted(role)){
 					isPermission=true;
 					break;
 				}
@@ -61,15 +63,15 @@ public class AuthorityAspect {
 		}else{
 			isPermission=true;
 		}
+		JSONObject jsonO=(JSONObject)pjp.proceed();
 		if(!isPermission){
-			System.out.println("没有权限");
-			JSONObject jsonObject=new JSONObject();
-			jsonObject.put("status", "2");
-			return jsonObject;
+			logger.info("AUTHORITY_SYSTEM------------------>没有权限");
+			jsonO.put("status", "2");
+			jsonO.put("message", "没有权限");
 		}else{
-			System.out.println("权限通过");
-			JSONObject jsonO=(JSONObject)pjp.proceed();
-			return jsonO;
+			logger.info("AUTHORITY_SYSTEM------------------>权限通过");
+			jsonO.put("status", "1");
 		}
+		return jsonO;
 	}
 }

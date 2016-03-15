@@ -19,21 +19,21 @@
 		`authority_type`
 		FROM
 		`authorization`
-		<trim prefix="where" prefixOverrides="AND |OR " suffixOverrides=",">
+		<trim prefix="where" prefixOverrides="AND |OR ">
 			<if test="id!=null">
 				`id`=#{id},
 			</if>
 			<if test="userId!=null">
-				AND `user_id`=#{userId},
+				AND `user_id`=#{userId}
 			</if>
 			<if test="moduleId!=null">
-				AND `module_id`=#{moduleId},
+				AND `module_id`=#{moduleId}
 			</if>
 			<if test="deptId!=null">
-				AND `dept_id`=#{deptId},
+				AND `dept_id`=#{deptId}
 			</if>
 			<if test="authorityType!=null">
-				AND `authority_type`=#{authorityType},
+				AND `authority_type`=#{authorityType}
 			</if>
 		</trim>
 	</select>
