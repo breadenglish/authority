@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.walkthetalktech.authority.dao.authority.ISysResourceMapper" >
+
+	<resultMap type="com.walkthetalktech.authority.model.authority.SysResource" id="baseMap">
+		<id column="id" property="id" jdbcType="BIGINT" />
+	    <result column="resource_name" property="resourceName" jdbcType="VARCHAR" />
+	    <result column="resource_prefix" property="resourcePrefix" jdbcType="VARCHAR" />
+	    <result column="resource_link" property="resourceLink" jdbcType="VARCHAR" />
+	    <result column="resource_type" property="resourceType" jdbcType="INTEGER" />
+	    <result column="resource_sort" property="resourceSort" jdbcType="INTEGER" />
+	    <result column="resource_description" property="resourceDescription" jdbcType="VARCHAR" />
+	    <result column="create_time" property="createTime" jdbcType="DATE" />
+	    <result column="avaiable" property="avaiable" jdbcType="BOOLEAN" />
+	    <result column="is_del" property="isDel" jdbcType="BOOLEAN" />
+	</resultMap>
+	
+	<resultMap id="menuMap" extends="baseMap" type="com.walkthetalktech.authority.model.authority.SysResource">
+		<collection property="childResourceList" resultMap="baseMap" />
+	</resultMap>
+  	
+  	<select id="selectSysResourceListByMenuSysResource" parameterType="com.walkthetalktech.authority.model.authority.SysResource" resultMap="menuMap">
+  		SELECT 
+  child.`resource_name`,
+  child.`resource_prefix`,
+  child.`resource_link`,
+  child.`resource_type`,
+  child.`resource_sort`,
+  child.`resource_description`,
+  child.`create_time`,
+  child.`avaiable`,
+  child.`is_del`,
+  parent.`id`,
+  parent.`resource_name`,
+  parent.`resource_prefix`,
+  parent.`resource_link`,
+  parent.`resource_type`,
+  parent.`resource_sort`,
+  parent.`resource_description`,
+  parent.`create_time`,
+  parent.`avaiable`,
+  parent.`is_del`
+FROM
+  `walkthetalktech`.`sys_resource` parent
+INNER JOIN  `walkthetalktech`.`sys_resource`  child ON child.`resource_parent_id`=parent.`id`
+<trim prefix="where" prefixOverrides="AND |OR " suffixOverrides="," >
+	<if test="id != null">
+  		parent.`id`=#{id},
+  	</if>
+  	<if test="resourceName !=null">
+  		AND parent.`resource_name` LIKE CONCAT(CONCAT('%', #{resourceName}), '%'),
+  	</if>
+  	<if test="resourcePrefix != null">
+  		AND parent.`resource_prefix` LIKE CONCAT(CONCAT('%', #{resourcePrefix}), '%'),
+  	</if>
+  	<if test="resourceLink != null">
+  		AND parent.`resource_link` LIKE CONCAT(CONCAT('%', #{resourceLink}), '%'),
+  	</if>
+  	<if test="resourceDescription != null">
+  		AND parent.`resource_description` LIKE CONCAT(CONCAT('%', #{resourceDescription}), '%'),
+  	</if>
+  	<if test="isDel != null">
+  		AND parent.`is_del`=#{isDel},
+  	</if>
+  	<if test="beginDate != null">
+  		AND parent.`create_time` <![CDATA[ >= ]]> #{beginDate},
+  	</if>
+  	<if test="endDate != null">
+  		AND parent.`create_time` <![CDATA[ <= ]]>#{endDate},
+  	</if>
+</trim>
+  	</select>
+<select id="selectSysResourceListByRoleId" resultMap="baseMap" parameterType="java.lang.Long">
+	SELECT 
+  sys_resource.`id`,
+  sys_resource.`resource_name`,
+  sys_resource.`resource_prefix`,
+  sys_resource.`resource_link`,
+  sys_resource.`resource_type`,
+  sys_resource.`resource_sort`,
+  sys_resource.`resource_parent_id`,
+  sys_resource.`resource_description`,
+  sys_resource.`create_time`,
+  sys_resource.`avaiable`,
+  sys_resource.`is_del`
+ FROM
+  `resource_role`
+INNER JOIN sys_resource ON sys_resource.`id`=resource_role.`resource_id`
+WHERE resource_role.`role_id` = #{roleId}
+</select>
+</mapper>

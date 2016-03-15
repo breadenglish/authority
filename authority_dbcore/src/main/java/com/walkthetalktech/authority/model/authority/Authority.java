@@ -2,44 +2,88 @@ package com.walkthetalktech.authority.model.authority;
 
 import java.io.Serializable;
 
+import com.walkthetalktech.authority.model.common.BaseModel;
+
 import net.sf.json.JSONObject;
 
-public class Authority implements Serializable {
+public class Authority extends BaseModel implements Serializable {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-
-	private String authorityName;
 	
-	private String authorityPrefix;
+	private Long id;
+
+	private Long userId;
 	
-	private String authorityDescription;
+	private Long moduleId;
+	
+	private Long deptId;
+	
+	private Integer authorityType;
+	
+	
 
-	public String getAuthorityName() {
-		return authorityName;
+	public Long getId() {
+		return id;
 	}
 
-	public void setAuthorityName(String authorityName) {
-		this.authorityName = authorityName;
+
+
+	public void setId(Long id) {
+		this.id = id;
 	}
 
-	public String getAuthorityPrefix() {
-		return authorityPrefix;
+
+
+	public Long getUserId() {
+		return userId;
 	}
 
-	public void setAuthorityPrefix(String authorityPrefix) {
-		this.authorityPrefix = authorityPrefix;
+
+
+	public void setUserId(Long userId) {
+		this.userId = userId;
 	}
 
-	public String getAuthorityDescription() {
-		return authorityDescription;
+
+
+	public Long getModuleId() {
+		return moduleId;
 	}
 
-	public void setAuthorityDescription(String authorityDescription) {
-		this.authorityDescription = authorityDescription;
+
+
+	public void setModuleId(Long moduleId) {
+		this.moduleId = moduleId;
 	}
+
+
+
+	public Long getDeptId() {
+		return deptId;
+	}
+
+
+
+	public void setDeptId(Long deptId) {
+		this.deptId = deptId;
+	}
+
+
+
+	public Integer getAuthorityType() {
+		return authorityType;
+	}
+
+
+
+	public void setAuthorityType(Integer authorityType) {
+		this.authorityType = authorityType;
+	}
+
+
 
 	@Override
 	public String toString() {

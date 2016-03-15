@@ -1,5 +1,40 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.walkthetalktech.dbcore.dao.authority.IAuthorityMapper" >
-  
+<mapper namespace="com.walkthetalktech.authority.dao.authority.IAuthorityMapper">
+	<resultMap type="com.walkthetalktech.authority.model.authority.Authority"
+		id="baseMap">
+		<id column="id" property="id" jdbcType="BIGINT" />
+		<result column="user_id" property="userId" jdbcType="BIGINT" />
+		<result column="module_id" property="moduleId" jdbcType="BIGINT" />
+		<result column="dept_id" property="deptId" jdbcType="BIGINT" />
+		<result column="authority_type" property="status" jdbcType="INTEGER" />
+	</resultMap>
+	<select id="selectAuthorityListByAuthority" resultMap="baseMap"
+		parameterType="com.walkthetalktech.authority.model.authority.Authority">
+		SELECT
+		`id`,
+		`user_id`,
+		`module_id`,
+		`dept_id`,
+		`authority_type`
+		FROM
+		`authorization`
+		<trim prefix="where" prefixOverrides="AND |OR " suffixOverrides=",">
+			<if test="id!=null">
+				`id`=#{id},
+			</if>
+			<if test="userId!=null">
+				AND `user_id`=#{userId},
+			</if>
+			<if test="moduleId!=null">
+				AND `module_id`=#{moduleId},
+			</if>
+			<if test="deptId!=null">
+				AND `dept_id`=#{deptId},
+			</if>
+			<if test="authorityType!=null">
+				AND `authority_type`=#{authorityType},
+			</if>
+		</trim>
+	</select>
 </mapper>

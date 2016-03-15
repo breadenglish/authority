@@ -1,14 +1,14 @@
 package com.walkthetalktech.authority.service.authority;
 
-import com.walkthetalktech.authority.model.authority.Role;
+import com.walkthetalktech.authority.model.authority.RoleInfo;
 
 public interface IRoleService {
 	
-	public Role addRole(Role role);
+	public RoleInfo addRole(RoleInfo roleInfo);
 	
 	public void removeRole(Long roleId);
 	
-	public void updateRole(Role role);
+	public void updateRole(RoleInfo roleInfo);
 	
-	public void findRoleList(Role role);
+	public void findRoleList(RoleInfo roleInfo);
 }

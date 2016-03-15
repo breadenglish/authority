@@ -6,6 +6,7 @@ import org.apache.shiro.subject.Subject;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
+import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 
 import com.walkthetalktech.authority.annotation.CheckPermissions;
@@ -16,6 +17,8 @@ import net.sf.json.JSONObject;
 @Component("loginAuthority")
 @Aspect
 public class AuthorityAspect {
+	
+	
 
 	/**检查权限字符串user:create之类
 	 * @return 将执行结果进行返回
@@ -35,7 +38,7 @@ public class AuthorityAspect {
 		return jsonObject;
 	}
 	
-	@Around("execution(* login*(com.walkthetalktech.dbcore.model.users.UserInfo))&&@annotation(checkPermissions)&&args(userInfo))")
+	@Around("execution(* login*(com.walkthetalktech.authority.model.users.UserInfo))&&@annotation(checkPermissions)&&args(userInfo))")
 	public JSONObject checkLogin(ProceedingJoinPoint pjp,CheckPermissions checkPermissions,UserInfo userInfo) throws Throwable{
 		String userName=userInfo.getAccount();
 		String password=userInfo.getPassword();

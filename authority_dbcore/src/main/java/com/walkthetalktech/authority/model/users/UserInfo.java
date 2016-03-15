@@ -1,11 +1,13 @@
 package com.walkthetalktech.authority.model.users;
 
 import java.io.Serializable;
-import java.sql.Date;
+import java.util.Date;
+
+import com.walkthetalktech.authority.model.common.BaseModel;
 
 import net.sf.json.JSONObject;
 
-public class UserInfo implements Serializable {
+public class UserInfo extends BaseModel implements Serializable {
 
 	/**
 	 * 

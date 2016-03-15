@@ -2,9 +2,11 @@ package com.walkthetalktech.authority.model.authority;
 
 import java.io.Serializable;
 
+import com.walkthetalktech.authority.model.common.BaseModel;
+
 import net.sf.json.JSONObject;
 
-public class Module implements Serializable {
+public class Module extends BaseModel implements Serializable {
 
 	/**
 	 * 
