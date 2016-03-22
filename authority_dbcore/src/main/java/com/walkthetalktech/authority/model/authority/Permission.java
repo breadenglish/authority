@@ -1,6 +1,7 @@
 package com.walkthetalktech.authority.model.authority;
 
 import java.io.Serializable;
+import java.util.Date;
 
 import com.walkthetalktech.authority.model.common.BaseModel;
 
@@ -66,7 +67,10 @@ public class Permission  extends BaseModel implements Serializable {
 
 	@Override
 	public String toString() {
-		return JSONObject.fromObject(this).toString();
+		JSONObject jsonObject=JSONObject.fromObject(this);
+		jsonObject.remove("beginDate");
+		jsonObject.remove("endDate");
+		return jsonObject.toString();
 	}
 	
 	

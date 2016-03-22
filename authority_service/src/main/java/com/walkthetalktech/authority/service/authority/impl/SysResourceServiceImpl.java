@@ -30,7 +30,7 @@ public class SysResourceServiceImpl implements ISysResourceService {
 	private ISysResourceMapper sysResourceMapper;
 	
 	@Override
-	public List<SysResource> findSysResourceByUserInfo(UserInfo userInfoParam, ResourceType resourceType) {
+	public List<SysResource> findSysResourceListByUserInfo(UserInfo userInfoParam, ResourceType resourceType) {
 		UserInfo userInfo=userInfoMapper.selectUserInfoByUserInfo(userInfoParam);
 		if(null==userInfo){
 			return null;
@@ -45,10 +45,11 @@ public class SysResourceServiceImpl implements ISysResourceService {
 		for (RoleInfo roleInfo : roleInfoList) {
 			resourceParam.put("roleInfoId", roleInfo.getId());
 			List<SysResource> sysResourceFragmentList=sysResourceMapper.selectSysResourceListByRoleIdAndSysResourceType(resourceParam);
-			if(resourceType.equals(ResourceType.MENU)){
-				sysResourceList=getMenuResourceList(sysResourceList, sysResourceFragmentList);
-			}else{
-				sysResourceList=getSysResourceList(sysResourceList, sysResourceFragmentList);
+			for (SysResource sysResource : sysResourceFragmentList) {
+				if(sysResourceList.contains(sysResource)){
+					continue;
+				}
+				sysResourceList.add(sysResource);
 			}
 		}
 		if(sysResourceList.size()<=0){
@@ -57,30 +58,9 @@ public class SysResourceServiceImpl implements ISysResourceService {
 		return sysResourceList;
 	}
 
-	private List<SysResource> getSysResourceList(List<SysResource> sysResourceList, List<SysResource> sysResourceFragmentList) {
-		for (SysResource sysResource : sysResourceFragmentList) {
-			if(sysResourceList.contains(sysResource)){
-				continue;
-			}
-			sysResourceList.add(sysResource);
-		}
-		return sysResourceList;
-	}
-
-	private List<SysResource> getMenuResourceList(List<SysResource> sysResourceList, List<SysResource> sysResourceFragmentList) {
-		for (SysResource sysResource : sysResourceFragmentList) {
-			if(sysResourceList.contains(sysResource)){
-				continue;
-			}
-			List<SysResource> menuResourceList=sysResourceMapper.selectSysResourceListByMenuSysResource(sysResource);
-			for (SysResource menuResource : menuResourceList) {
-				if(sysResourceList.contains(menuResource)){
-					continue;
-				}
-				sysResourceList.add(menuResource);
-			}
-		}
-		return sysResourceList;
+	@Override
+	public List<SysResource> findSysResourceListBySysResource(SysResource sysResource) {
+		return sysResourceMapper.selectSysResourceListBySysResource(sysResource);
 	}
 	
 	

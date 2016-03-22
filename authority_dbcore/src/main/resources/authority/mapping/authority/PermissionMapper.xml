@@ -43,6 +43,20 @@
 	</selectKey>
   </insert>
   
+  <select id="selectPermissionCountByPermission" resultType="java.lang.Integer" parameterType="com.walkthetalktech.authority.model.authority.Permission">
+  	SELECT COUNT(permission.`id`) FROM permission
+  	<trim prefix="where" prefixOverrides="AND |OR ">
+  		<if test="permissionName !=null">
+  			permission_name LIKE CONCAT(CONCAT('%', #{permissionName}), '%')
+  		</if>
+  		<if test="permissionDescription !=null">
+  			AND permission_description LIKE CONCAT(CONCAT('%', #{permissionDescription}), '%')
+  		</if>
+  	</trim>
+  	<if test="rows != null">
+  		LIMIT #{beginNum},#{rows};
+  	</if>
+  </select>
   
   <select id="selectPermissionByPrimaryKey" resultMap="baseResultMap" parameterType="java.lang.Long">
   	SELECT `id`,
@@ -55,6 +69,21 @@
   			id=#{permissionId}
   	</trim>
   </select>
+  <select id="selectPermissionListByPermission" resultMap="baseResultMap" parameterType="com.walkthetalktech.authority.model.authority.Permission">
+  	SELECT `id`,
+  `permission_name`,
+  `permission_prefix`,
+  `permission_description`,
+  `status` 
+  	FROM `walkthetalktech`.`permission`
+  	<if test="rows != null">
+  		LIMIT #{beginNum},#{rows};
+  	</if>
+  </select>
+  
+  <!-- <select id="selectPermissionListBySysResource" parameterType="com.walkthetalktech.authority.model.authority.SysResource">
+  	
+  </select> -->
   
   <update id="updatePermissionByPermission" parameterType="com.walkthetalktech.authority.model.authority.Permission">
   	UPDATE `walkthetalktech`.`permission` 

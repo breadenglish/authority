@@ -46,6 +46,8 @@ public class ModuleType  extends BaseModel implements Serializable {
 	@Override
 	public String toString() {
 		JSONObject jsonObject=JSONObject.fromObject(this);
+		jsonObject.remove("beginDate");
+		jsonObject.remove("endDate");
 		return jsonObject.toString();
 	}
 	

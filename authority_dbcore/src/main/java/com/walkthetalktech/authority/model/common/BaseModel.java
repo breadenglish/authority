@@ -3,28 +3,32 @@ package com.walkthetalktech.authority.model.common;
 import java.util.Date;
 
 public class BaseModel {
-	private Integer pageSize;
 	
-	private Integer pageIndex;
+	
+	
+	private Integer rows;
+	
+	private Integer beginNum;
 	
 	private Date beginDate;
 	
 	private Date endDate;
 
-	public Integer getPageSize() {
-		return pageSize;
+	public Integer getRows() {
+		return rows;
 	}
 
-	public void setPageSize(Integer pageSize) {
-		this.pageSize = pageSize;
+	public void setRows(Integer rows) {
+		this.rows = rows;
 	}
 
-	public Integer getPageIndex() {
-		return pageIndex;
+
+	public Integer getBeginNum() {
+		return beginNum;
 	}
 
-	public void setPageIndex(Integer pageIndex) {
-		this.pageIndex = pageIndex;
+	public void setBeginNum(Integer beginNum) {
+		this.beginNum = beginNum;
 	}
 
 	public Date getBeginDate() {

@@ -6,7 +6,7 @@
 	<id column="id" property="id" jdbcType="BIGINT" />
 	    <result column="role_name" property="roleName" jdbcType="VARCHAR" />
 	    <result column="role_prefix" property="rolePrefix" jdbcType="VARCHAR" />
-	    <result column="create_time" property="createTime" jdbcType="DATE" />
+	    <result column="create_time" property="createTime" jdbcType="DATE" typeHandler="" />
 	    <result column="role_description" property="roleDescription" jdbcType="VARCHAR" />
 	    <result column="is_del" property="isDel" jdbcType="BOOLEAN" />
 </resultMap>
@@ -22,6 +22,59 @@
 FROM `authorization_role`
 INNER JOIN role_info ON role_info.`id`=authorization_role.`role_id`
 WHERE authorization_role.`authorization_id` = #{authorityId}
+  </select>
+  
+  <select id="selectRoleInfoListByRoleInfo" resultMap="baseMap" parameterType="com.walkthetalktech.authority.model.authority.RoleInfo">
+  	SELECT 
+  `id`,
+  `role_name`,
+  `role_prefix`,
+  `role_description`,
+  `create_time`,
+  `is_del`
+FROM
+  `walkthetalktech`.`role_info` 
+<trim prefix="where" prefixOverrides="AND |OR ">
+  		<if test="roleName !=null">
+  			role_name LIKE CONCAT(CONCAT('%', #{roleName}), '%')
+  		</if>
+  		<if test="rolePrefix !=null">
+  			AND role_prefix LIKE CONCAT(CONCAT('%', #{rolePrefix}), '%')
+  		</if>
+  		<if test="roleDescription !=null">
+  			AND role_description LIKE CONCAT(CONCAT('%', #{roleDescription}), '%')
+  		</if>
+  		<if test="beginDate != null">
+  		AND `create_time` <![CDATA[ >= ]]> #{beginDate}
+  	</if>
+  	<if test="endDate != null">
+  		AND `create_time` <![CDATA[ <= ]]>#{endDate}
+  	</if>
+  	</trim>
+  	<if test="rows != null">
+  		LIMIT #{beginNum},#{rows};
+  	</if>
+  </select>
+  
+  <select id="selectRoleInfoCountByRoleInfo" parameterType="com.walkthetalktech.authority.model.authority.RoleInfo" resultType="java.lang.Integer">
+  	SELECT COUNT(role_info.`id`) FROM role_info 
+  	<trim prefix="where" prefixOverrides="AND |OR ">
+  		<if test="roleName !=null and roleName !=''">
+  			role_name LIKE CONCAT(CONCAT('%', #{roleName}), '%')
+  		</if>
+  		<if test="rolePrefix !=null and rolePrefix !=''">
+  			AND role_prefix LIKE CONCAT(CONCAT('%', #{rolePrefix}), '%')
+  		</if>
+  		<if test="roleDescription !=null and roleDescription !=''">
+  			AND role_description LIKE CONCAT(CONCAT('%', #{roleDescription}), '%')
+  		</if>
+  		<if test="beginDate != null and beginDate !=''">
+  		AND `create_time` <![CDATA[ >= ]]> #{beginDate}
+  	</if>
+  	<if test="endDate != null and endDate !=''">
+  		AND `create_time` <![CDATA[ <= ]]>#{endDate}
+  	</if>
+  	</trim>
   </select>
   
 </mapper>

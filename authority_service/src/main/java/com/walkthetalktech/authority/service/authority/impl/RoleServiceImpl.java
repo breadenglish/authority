@@ -43,6 +43,20 @@ public class RoleServiceImpl implements IRoleInfoService {
 		return roleInfoList;
 	}
 
+	@Override
+	public List<RoleInfo> findRoleInfoByRoleInfo(RoleInfo roleInfo) {
+		List<RoleInfo> roleInfoList=roleInfoMapper.selectRoleInfoListByRoleInfo(roleInfo);
+		if(null!=roleInfoList&&roleInfoList.size()>0){
+			return roleInfoList;
+		}
+		return null;
+	}
+
+	@Override
+	public Integer findRoleInfoCountByRoleInfo(RoleInfo roleInfo) {
+		return roleInfoMapper.selectRoleInfoCountByRoleInfo(roleInfo);
+	}
+
 
 
 }

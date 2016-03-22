@@ -23,7 +23,7 @@ public class TestSysResourceService {
 	public void testFindSysResourceByUserInfo(){
 		UserInfo userInfoParam=new UserInfo();
 		userInfoParam.setAccount("admin");
-		List<SysResource> sysResourceList=sysResourceService.findSysResourceByUserInfo(userInfoParam, ResourceType.MENU);
+		List<SysResource> sysResourceList=sysResourceService.findSysResourceListByUserInfo(userInfoParam, ResourceType.MENU);
 		System.out.println("查询结果:"+sysResourceList);
 	}
 }

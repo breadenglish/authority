@@ -8,5 +8,7 @@ import com.walkthetalktech.authority.model.users.UserInfo;
 
 public interface ISysResourceService {
 
-	public List<SysResource> findSysResourceByUserInfo(UserInfo userInfoParam,ResourceType resourceType); 
+	public List<SysResource> findSysResourceListByUserInfo(UserInfo userInfoParam,ResourceType resourceType); 
+	
+	public List<SysResource> findSysResourceListBySysResource(SysResource sysResource);
 }

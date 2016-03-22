@@ -6,6 +6,7 @@
 		<id column="id" property="id" jdbcType="BIGINT" />
 	    <result column="resource_name" property="resourceName" jdbcType="VARCHAR" />
 	    <result column="resource_prefix" property="resourcePrefix" jdbcType="VARCHAR" />
+	    <result column="resource_icon" property="resourceIcon" jdbcType="VARCHAR" />
 	    <result column="resource_link" property="resourceLink" jdbcType="VARCHAR" />
 	    <result column="resource_type" property="resourceType" jdbcType="INTEGER" />
 	    <result column="resource_sort" property="resourceSort" jdbcType="INTEGER" />
@@ -19,7 +20,7 @@
 		<collection property="childResourceList" resultMap="baseMap" />
 	</resultMap>
   	
-  	<select id="selectSysResourceListByMenuSysResource" parameterType="com.walkthetalktech.authority.model.authority.SysResource" resultMap="menuMap">
+  	<!-- <select id="selectSysResourceListByMenuSysResource" parameterType="com.walkthetalktech.authority.model.authority.SysResource" resultMap="menuMap">
   		SELECT 
   child.`resource_name`,
   child.`resource_prefix`,
@@ -70,10 +71,60 @@ INNER JOIN  `walkthetalktech`.`sys_resource`  child ON child.`resource_parent_id
   		AND parent.`create_time` <![CDATA[ <= ]]>#{endDate}
   	</if>
 </trim>
-  	</select>
+  	</select> -->
+<select id="selectSysResourceListBySysResource" parameterType="com.walkthetalktech.authority.model.authority.SysResource" resultMap="baseMap">
+	SELECT 
+  sys_resource.`id`,
+  sys_resource.`resource_name`,
+  sys_resource.`resource_prefix`,
+  sys_resource.`resource_icon`,
+  sys_resource.`resource_link`,
+  sys_resource.`resource_type`,
+  sys_resource.`resource_sort`,
+  sys_resource.`resource_parent_id`,
+  sys_resource.`resource_description`,
+  sys_resource.`create_time`,
+  sys_resource.`avaiable`,
+  sys_resource.`is_del`
+ FROM
+`sys_resource`
+<trim prefix="where" prefixOverrides="AND |OR " suffixOverrides="," >
+	<if test="id != null">
+  		`id`=#{id}
+  	</if>
+  	<if test="resourceName !=null and resourceName !=''">
+  		AND `resource_name` LIKE CONCAT(CONCAT('%', #{resourceName}), '%')
+  	</if>
+  	<if test="resourcePrefix != null and resourcePrefix !=''">
+  		AND `resource_prefix` LIKE CONCAT(CONCAT('%', #{resourcePrefix}), '%')
+  	</if>
+  	<if test="resourceLink != null and resourceLink !=''">
+  		AND `resource_link` LIKE CONCAT(CONCAT('%', #{resourceLink}), '%')
+  	</if>
+  	<if test="resourceDescription != null and resourceDescription !=''">
+  		AND `resource_description` LIKE CONCAT(CONCAT('%', #{resourceDescription}), '%')
+  	</if>
+  	<if test="isDel != null">
+  		AND `is_del`=#{isDel}
+  	</if>
+  	<if test="beginDate != null">
+  		AND `create_time` <![CDATA[ >= ]]> #{beginDate}
+  	</if>
+  	<if test="endDate != null">
+  		AND `create_time` <![CDATA[ <= ]]>#{endDate}
+  	</if>
+  	<if test="resourceType != null">
+  		AND resource_type=#{resourceType}
+  	</if>
+  	<if test="resourceParentId != null">
+  		AND resource_parent_id=#{resourceParentId}
+  	</if>
+</trim>
+</select>
 <select id="selectSysResourceListByRoleIdAndSysResourceType" resultMap="baseMap" parameterType="java.util.Map">
 	SELECT 
   sys_resource.`id`,
+  sys_resource.`resource_icon`,
   sys_resource.`resource_name`,
   sys_resource.`resource_prefix`,
   sys_resource.`resource_link`,

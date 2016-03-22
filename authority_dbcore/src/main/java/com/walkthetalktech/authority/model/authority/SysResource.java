@@ -41,6 +41,16 @@ public class SysResource extends BaseModel implements Serializable {
 
 	private List<SysResource> childResourceList;
 	
+	private String resourceIcon;
+	
+	public String getResourceIcon() {
+		return resourceIcon;
+	}
+
+	public void setResourceIcon(String resourceIcon) {
+		this.resourceIcon = resourceIcon;
+	}
+
 	public Long getId() {
 		return id;
 	}
@@ -147,7 +157,10 @@ public class SysResource extends BaseModel implements Serializable {
 
 	@Override
 	public String toString() {
-		return JSONObject.fromObject(this).toString();
+		JSONObject jsonObject=JSONObject.fromObject(this);
+		jsonObject.remove("beginDate");
+		jsonObject.remove("endDate");
+		return jsonObject.toString();
 	}
 
 	

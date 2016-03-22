@@ -6,7 +6,8 @@ import java.util.Map;
 import com.walkthetalktech.authority.model.authority.SysResource;
 
 public interface ISysResourceMapper {
-	public List<SysResource> selectSysResourceListByMenuSysResource(SysResource sysResource);
+	/*public List<SysResource> selectSysResourceListByMenuSysResource(SysResource sysResource);*/
+	public List<SysResource>  selectSysResourceListBySysResource(SysResource sysResource);
 	
 	public List<SysResource> selectSysResourceListByRoleIdAndSysResourceType(Map<String,Object> map);
 }
