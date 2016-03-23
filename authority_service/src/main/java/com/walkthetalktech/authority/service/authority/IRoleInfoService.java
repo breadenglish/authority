@@ -16,7 +16,7 @@ public interface IRoleInfoService {
 	
 	public RoleInfo modifyRoleInfoByRoleInfo(RoleInfo roleInfo);
 	
-	public RoleInfo addRoleInfoByRoleInfo(RoleInfo roleInfo);
+	public Long addRoleInfoByRoleInfo(RoleInfo roleInfo);
 	
 	public RoleInfo loadRoleInfoByPrimaryKey(Long roleInfoId);
 }

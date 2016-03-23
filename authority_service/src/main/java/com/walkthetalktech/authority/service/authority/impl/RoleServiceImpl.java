@@ -1,8 +1,12 @@
 package com.walkthetalktech.authority.service.authority.impl;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -73,19 +77,28 @@ public class RoleServiceImpl implements IRoleInfoService {
 
 	@Override
 	public RoleInfo modifyRoleInfoByRoleInfo(RoleInfo roleInfo) {
-		
+		if(null!=this.loadRoleInfoByPrimaryKey(roleInfo.getId())){
+			int result=roleInfoMapper.updateRoleInfoByRoleInfo(roleInfo);
+			if(result>0){
+				return roleInfo;
+			}
+		}
 		return null;
 	}
 
 	@Override
-	public RoleInfo addRoleInfoByRoleInfo(RoleInfo roleInfo) {
-		return null;
+	public Long addRoleInfoByRoleInfo(RoleInfo roleInfo) {
+		if(StringUtils.isBlank(roleInfo.getCreateTime())){
+			Date date=new Date();
+			SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+			roleInfo.setCreateTime(sdf.format(date));
+		}
+		return roleInfoMapper.insertRoleInfoByRoleInfo(roleInfo);
 	}
 
 	@Override
 	public RoleInfo loadRoleInfoByPrimaryKey(Long roleInfoId) {
-		// TODO Auto-generated method stub
-		return null;
+		return roleInfoMapper.loadRoleInfoByPrimaryKey(roleInfoId);
 	}
 
 

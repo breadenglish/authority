@@ -53,9 +53,6 @@
   			AND permission_description LIKE CONCAT(CONCAT('%', #{permissionDescription}), '%')
   		</if>
   	</trim>
-  	<if test="rows != null">
-  		LIMIT #{beginNum},#{rows};
-  	</if>
   </select>
   
   <select id="selectPermissionByPrimaryKey" resultMap="baseResultMap" parameterType="java.lang.Long">

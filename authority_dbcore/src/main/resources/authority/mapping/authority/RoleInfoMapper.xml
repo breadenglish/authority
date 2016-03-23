@@ -77,11 +77,75 @@ FROM
   	</trim>
   </select>
   
+  <select id="loadRoleInfoByPrimaryKey" parameterType="java.lang.Long" resultMap="baseMap">
+  	SELECT 
+  `id`,
+  `role_name`,
+  `role_prefix`,
+  `role_description`,
+  `create_time`,
+  `is_del`
+FROM
+  `walkthetalktech`.`role_info` 
+WHERE `role_info`.`id` = #{roleInfoId}
+  </select>
+  <insert id="insertRoleInfoByRoleInfo" parameterType="com.walkthetalktech.authority.model.authority.RoleInfo">
+  	INSERT INTO `walkthetalktech`.`role_info`
+  	<trim prefix="(" suffix=")" suffixOverrides="," >
+  	<if test="roleName !=null">
+			`role_name`,
+		</if>
+		<if test="rolePrefix !=null">
+			`role_prefix`,
+		</if>
+		<if test="roleDescription !=null">
+			`role_description`,
+		</if>
+		<if test="createTime !=null and createTime !=''">
+			`create_time`
+		</if>
+  	</trim>
+  	<trim prefix="VALUES (" suffix=")" suffixOverrides="," >
+  		<if test="roleName !=null">
+			#{roleName},
+		</if>
+		<if test="rolePrefix !=null">
+			#{rolePrefix},
+		</if>
+		<if test="roleDescription !=null">
+			#{roleDescription},
+		</if>
+		<if test="createTime !=null and createTime !=''">
+			#{createTime}
+		</if>
+  	</trim>
+  </insert>
+  <update id="updateRoleInfoByRoleInfo" parameterType="com.walkthetalktech.authority.model.authority.RoleInfo">
+  	UPDATE 
+  `walkthetalktech`.`role_info` 
+<set>
+	  	<if test="roleName !=null">
+			`role_name` = #{roleName},
+		</if>
+		<if test="rolePrefix !=null">
+			`role_prefix` = #{rolePrefix},
+		</if>
+		<if test="roleDescription !=null">
+			`role_description` = #{roleDescription},
+		</if>
+		<if test="isDel !=null">
+			`is_del` = #{isDel}
+		</if>
+	  </set>
+	  <trim prefix="where" prefixOverrides="AND |OR ">
+	  	id=#{id}
+	  </trim>
+  </update>  
   <delete id="deleteRoleInfoByPrimaryKey" parameterType="java.lang.Long">
   	DELETE 
 FROM
   `walkthetalktech`.`role_info` 
-WHERE `id` = #{id} ;
+WHERE `id` = #{id};
   </delete>
   
 </mapper>

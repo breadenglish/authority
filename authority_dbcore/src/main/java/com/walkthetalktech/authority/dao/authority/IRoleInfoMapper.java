@@ -14,10 +14,10 @@ public interface IRoleInfoMapper {
 	
 	public Integer deleteRoleInfoByPrimaryKey(Long roleInfoId);
 	
-	/*public RoleInfo loadRoleInfoByPrimaryKey(Long roleInfoId);
+	public RoleInfo loadRoleInfoByPrimaryKey(Long roleInfoId);
 	
 	public Integer updateRoleInfoByRoleInfo(RoleInfo roleInfo); 
 	
-	public Long insertRoleInfoByRoleInfo(RoleInfo roleInfo);*/
+	public Long insertRoleInfoByRoleInfo(RoleInfo roleInfo);
 	
 }
