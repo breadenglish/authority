@@ -15,6 +15,7 @@ import com.walkthetalktech.authority.model.authority.Authority;
 import com.walkthetalktech.authority.model.authority.RoleInfo;
 import com.walkthetalktech.authority.service.authority.IAuthorityService;
 import com.walkthetalktech.authority.service.authority.IRoleInfoService;
+import com.walkthetalktech.authority.utils.DateUtils;
 
 @Service("roleService")
 public class RoleServiceImpl implements IRoleInfoService {
@@ -89,9 +90,7 @@ public class RoleServiceImpl implements IRoleInfoService {
 	@Override
 	public Long addRoleInfoByRoleInfo(RoleInfo roleInfo) {
 		if(StringUtils.isBlank(roleInfo.getCreateTime())){
-			Date date=new Date();
-			SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-			roleInfo.setCreateTime(sdf.format(date));
+			roleInfo.setCreateTime(DateUtils.getCurrentTime("yyyy-MM-dd hh:mm:ss"));
 		}
 		return roleInfoMapper.insertRoleInfoByRoleInfo(roleInfo);
 	}
