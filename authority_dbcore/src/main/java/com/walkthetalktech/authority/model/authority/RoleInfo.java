@@ -1,7 +1,7 @@
 package com.walkthetalktech.authority.model.authority;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.util.List;
 
 import com.walkthetalktech.authority.model.common.BaseModel;
 
@@ -20,13 +20,15 @@ public class RoleInfo  extends BaseModel implements Serializable {
 	
 	private String rolePrefix;
 	
-	private Date createTime;
+	private String createTime;
 	
 	private String roleDescription;
 	
 	private Boolean avaiable;
 	
 	private Boolean isDel;
+	
+	private List<SysResource> sysResourceList;
 	
 	
 	public Long getId() {
@@ -58,16 +60,13 @@ public class RoleInfo  extends BaseModel implements Serializable {
 		this.rolePrefix = rolePrefix;
 	}
 
-
-	public Date getCreateTime() {
+	public String getCreateTime() {
 		return createTime;
 	}
 
-
-	public void setCreateTime(Date createTime) {
+	public void setCreateTime(String createTime) {
 		this.createTime = createTime;
 	}
-
 
 	public String getRoleDescription() {
 		return roleDescription;
@@ -96,6 +95,16 @@ public class RoleInfo  extends BaseModel implements Serializable {
 
 	public void setIsDel(Boolean isDel) {
 		this.isDel = isDel;
+	}
+	
+
+	public List<SysResource> getSysResourceList() {
+		return sysResourceList;
+	}
+
+
+	public void setSysResourceList(List<SysResource> sysResourceList) {
+		this.sysResourceList = sysResourceList;
 	}
 
 

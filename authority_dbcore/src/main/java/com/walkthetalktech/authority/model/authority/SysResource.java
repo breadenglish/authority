@@ -31,7 +31,7 @@ public class SysResource extends BaseModel implements Serializable {
 	
 	private String resourceDescription;
 	
-	private Date createTime;
+	private String createTime;
 	
 	private Boolean avaiable;
 	
@@ -115,11 +115,13 @@ public class SysResource extends BaseModel implements Serializable {
 		this.resourceDescription = resourceDescription;
 	}
 
-	public Date getCreateTime() {
+	
+
+	public String getCreateTime() {
 		return createTime;
 	}
 
-	public void setCreateTime(Date createTime) {
+	public void setCreateTime(String createTime) {
 		this.createTime = createTime;
 	}
 

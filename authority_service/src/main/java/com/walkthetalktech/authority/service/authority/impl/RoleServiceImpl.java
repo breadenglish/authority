@@ -57,6 +57,37 @@ public class RoleServiceImpl implements IRoleInfoService {
 		return roleInfoMapper.selectRoleInfoCountByRoleInfo(roleInfo);
 	}
 
+	@Override
+	public Boolean removeRoleInfoListByPKArray(String roleInfoIds) {
+		String[] roleInfoIdArray=roleInfoIds.split(",");
+		boolean isSuccess=true;
+		for(String roleInfoId : roleInfoIdArray){
+			Integer result=roleInfoMapper.deleteRoleInfoByPrimaryKey(Long.parseLong(roleInfoId));
+			if(result<=0){
+				isSuccess=false;
+				break;
+			}
+		}
+		return isSuccess;
+	}
+
+	@Override
+	public RoleInfo modifyRoleInfoByRoleInfo(RoleInfo roleInfo) {
+		
+		return null;
+	}
+
+	@Override
+	public RoleInfo addRoleInfoByRoleInfo(RoleInfo roleInfo) {
+		return null;
+	}
+
+	@Override
+	public RoleInfo loadRoleInfoByPrimaryKey(Long roleInfoId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 
 
 }

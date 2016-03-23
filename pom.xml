@@ -28,6 +28,7 @@
 	<shiro.version>1.2.4</shiro.version>
 	<log4j.version>2.1</log4j.version>
   </properties>
+  
 
   <dependencyManagement>
   	<dependencies>

@@ -11,4 +11,12 @@ public interface IRoleInfoService {
 	public List<RoleInfo> findRoleInfoByRoleInfo(RoleInfo roleInfo);
 	
 	public Integer findRoleInfoCountByRoleInfo(RoleInfo roleInfo);
+	
+	public Boolean removeRoleInfoListByPKArray(String roleInfoIds);
+	
+	public RoleInfo modifyRoleInfoByRoleInfo(RoleInfo roleInfo);
+	
+	public RoleInfo addRoleInfoByRoleInfo(RoleInfo roleInfo);
+	
+	public RoleInfo loadRoleInfoByPrimaryKey(Long roleInfoId);
 }
