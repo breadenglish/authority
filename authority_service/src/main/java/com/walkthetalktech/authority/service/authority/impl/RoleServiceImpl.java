@@ -122,9 +122,28 @@ public class RoleServiceImpl implements IRoleInfoService {
 				child.put("name", sysResource.getSysResourceName());
 				child.put("prefix", sysResource.getSysResourcePrefix());
 				child.put("sysResourceDescription", sysResource.getResourceDescription());
+				SysResource param=new SysResource();
+				param.setResourceParentId(sysResource.getId());
+				List<SysResource> childSysResourceList=sysResourceMapper.selectSysResourceListBySysResource(param);
+				List<JSONObject> chList=new ArrayList<JSONObject>();
+				for (SysResource ch : childSysResourceList) {
+					JSONObject json=new JSONObject();
+					json.put("id", ch.getId());
+					json.put("name", ch.getSysResourceName());
+					json.put("prefix", ch.getSysResourcePrefix());
+					json.put("sysResourceDescription", ch.getResourceDescription());
+					chList.add(json);
+				}
+				
+				if(chList.size()>0){
+					child.put("state", "closed");
+					child.put("children", chList);
+				}
+				
 				children.add(child);
 			}
 			if(children.size()>0){
+				roleInfoJSONObject.put("state", "closed");
 				roleInfoJSONObject.put("children", children);
 			}
 			jsonObjectList.add(roleInfoJSONObject);
