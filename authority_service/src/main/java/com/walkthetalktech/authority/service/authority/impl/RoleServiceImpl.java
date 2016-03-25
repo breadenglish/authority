@@ -1,9 +1,6 @@
 package com.walkthetalktech.authority.service.authority.impl;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -11,11 +8,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.walkthetalktech.authority.dao.authority.IRoleInfoMapper;
+import com.walkthetalktech.authority.dao.authority.ISysResourceMapper;
 import com.walkthetalktech.authority.model.authority.Authority;
 import com.walkthetalktech.authority.model.authority.RoleInfo;
+import com.walkthetalktech.authority.model.authority.SysResource;
 import com.walkthetalktech.authority.service.authority.IAuthorityService;
 import com.walkthetalktech.authority.service.authority.IRoleInfoService;
 import com.walkthetalktech.authority.utils.DateUtils;
+
+import net.sf.json.JSONObject;
 
 @Service("roleService")
 public class RoleServiceImpl implements IRoleInfoService {
@@ -25,6 +26,9 @@ public class RoleServiceImpl implements IRoleInfoService {
 	
 	@Autowired
 	private IRoleInfoMapper roleInfoMapper;
+	
+	@Autowired
+	private ISysResourceMapper sysResourceMapper;
 
 	@Override
 	public List<RoleInfo> findRoleInfoByUserAccount(String account) {
@@ -99,6 +103,36 @@ public class RoleServiceImpl implements IRoleInfoService {
 	public RoleInfo loadRoleInfoByPrimaryKey(Long roleInfoId) {
 		return roleInfoMapper.loadRoleInfoByPrimaryKey(roleInfoId);
 	}
+
+	@Override
+	public List<JSONObject> findRoleSysResourceListByRoleInfo(RoleInfo roleInfoParam) {
+		List<JSONObject> jsonObjectList=new ArrayList<JSONObject>();
+		List<RoleInfo> roleInfoList = roleInfoMapper.selectRoleInfoListByRoleInfo(roleInfoParam);
+		for (RoleInfo roleInfo : roleInfoList) {
+			JSONObject roleInfoJSONObject=new JSONObject();
+			roleInfoJSONObject.put("id", roleInfo.getId());
+			roleInfoJSONObject.put("name", roleInfo.getRoleName());
+			roleInfoJSONObject.put("prefix", roleInfo.getRolePrefix());
+			roleInfoJSONObject.put("roleDescription", roleInfo.getRoleDescription());
+			List<SysResource> sysResourceList=sysResourceMapper.selectSysResourceListByRoleInfo(roleInfo);
+			List<JSONObject> children=new ArrayList<JSONObject>();
+			for (SysResource sysResource : sysResourceList) {
+				JSONObject child=new JSONObject();
+				child.put("id", sysResource.getId());
+				child.put("name", sysResource.getSysResourceName());
+				child.put("prefix", sysResource.getSysResourcePrefix());
+				child.put("sysResourceDescription", sysResource.getResourceDescription());
+				children.add(child);
+			}
+			if(children.size()>0){
+				roleInfoJSONObject.put("children", children);
+			}
+			jsonObjectList.add(roleInfoJSONObject);
+		}
+		return jsonObjectList;
+	}
+
+	
 
 
 

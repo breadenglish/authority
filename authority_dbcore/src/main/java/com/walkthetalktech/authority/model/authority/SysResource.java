@@ -17,9 +17,9 @@ public class SysResource extends BaseModel implements Serializable {
 	
 	private Long id;
 	
-	private String resourceName;
+	private String sysResourceName;
 	
-	private String resourcePrefix;
+	private String sysResourcePrefix;
 	
 	private String resourceLink;
 	
@@ -39,10 +39,10 @@ public class SysResource extends BaseModel implements Serializable {
 	
 	private SysResource parentSysResource;
 
-	private List<SysResource> childResourceList;
+	private List<SysResource> children;
 	
 	private String resourceIcon;
-	
+
 	public String getResourceIcon() {
 		return resourceIcon;
 	}
@@ -59,20 +59,28 @@ public class SysResource extends BaseModel implements Serializable {
 		this.id = id;
 	}
 
-	public String getResourceName() {
-		return resourceName;
+	public String getSysResourceName() {
+		return sysResourceName;
 	}
 
-	public void setResourceName(String resourceName) {
-		this.resourceName = resourceName;
+	public void setSysResourceName(String sysResourceName) {
+		this.sysResourceName = sysResourceName;
 	}
 
-	public String getResourcePrefix() {
-		return resourcePrefix;
+	public String getSysResourcePrefix() {
+		return sysResourcePrefix;
 	}
 
-	public void setResourcePrefix(String resourcePrefix) {
-		this.resourcePrefix = resourcePrefix;
+	public void setSysResourcePrefix(String sysResourcePrefix) {
+		this.sysResourcePrefix = sysResourcePrefix;
+	}
+
+	public List<SysResource> getChildren() {
+		return children;
+	}
+
+	public void setChildren(List<SysResource> children) {
+		this.children = children;
 	}
 
 	public String getResourceLink() {
@@ -141,13 +149,7 @@ public class SysResource extends BaseModel implements Serializable {
 		this.isDel = isDel;
 	}
 	
-	public List<SysResource> getChildResourceList() {
-		return childResourceList;
-	}
-
-	public void setChildResourceList(List<SysResource> childResourceList) {
-		this.childResourceList = childResourceList;
-	}
+	
 	
 	public SysResource getParentSysResource() {
 		return parentSysResource;
@@ -160,8 +162,6 @@ public class SysResource extends BaseModel implements Serializable {
 	@Override
 	public String toString() {
 		JSONObject jsonObject=JSONObject.fromObject(this);
-		jsonObject.remove("beginDate");
-		jsonObject.remove("endDate");
 		return jsonObject.toString();
 	}
 

@@ -4,6 +4,8 @@ import java.util.List;
 
 import com.walkthetalktech.authority.model.authority.RoleInfo;
 
+import net.sf.json.JSONObject;
+
 public interface IRoleInfoService {
 	
 	public List<RoleInfo> findRoleInfoByUserAccount(String account);
@@ -19,4 +21,6 @@ public interface IRoleInfoService {
 	public Long addRoleInfoByRoleInfo(RoleInfo roleInfo);
 	
 	public RoleInfo loadRoleInfoByPrimaryKey(Long roleInfoId);
+	
+	public List<JSONObject> findRoleSysResourceListByRoleInfo(RoleInfo roleInfo);
 }

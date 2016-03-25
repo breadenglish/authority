@@ -62,8 +62,9 @@ public class SysResourceServiceImpl implements ISysResourceService {
 	public List<SysResource> findSysResourceListBySysResource(SysResource sysResource) {
 		return sysResourceMapper.selectSysResourceListBySysResource(sysResource);
 	}
-	
-	
-	
 
+	@Override
+	public List<SysResource> findSysResourceListByRoleInfo(RoleInfo roleInfo) {
+		return sysResourceMapper.selectSysResourceListByRoleInfo(roleInfo);
+	}
 }

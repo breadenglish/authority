@@ -4,8 +4,8 @@
 
 	<resultMap type="com.walkthetalktech.authority.model.authority.SysResource" id="baseMap">
 		<id column="id" property="id" jdbcType="BIGINT" />
-	    <result column="resource_name" property="resourceName" jdbcType="VARCHAR" />
-	    <result column="resource_prefix" property="resourcePrefix" jdbcType="VARCHAR" />
+	    <result column="resource_name" property="sysResourceName" jdbcType="VARCHAR" />
+	    <result column="resource_prefix" property="sysResourcePrefix" jdbcType="VARCHAR" />
 	    <result column="resource_icon" property="resourceIcon" jdbcType="VARCHAR" />
 	    <result column="resource_link" property="resourceLink" jdbcType="VARCHAR" />
 	    <result column="resource_type" property="resourceType" jdbcType="INTEGER" />
@@ -17,7 +17,7 @@
 	</resultMap>
 	
 	<resultMap id="menuMap" extends="baseMap" type="com.walkthetalktech.authority.model.authority.SysResource">
-		<collection property="childResourceList" resultMap="baseMap" />
+		<collection property="children" resultMap="baseMap" />
 	</resultMap>
   	
   	<!-- <select id="selectSysResourceListByMenuSysResource" parameterType="com.walkthetalktech.authority.model.authority.SysResource" resultMap="menuMap">
@@ -49,11 +49,11 @@ INNER JOIN  `walkthetalktech`.`sys_resource`  child ON child.`resource_parent_id
 	<if test="id != null">
   		AND parent.`id`=#{id}
   	</if>
-  	<if test="resourceName !=null and resourceName !=''">
-  		AND parent.`resource_name` LIKE CONCAT(CONCAT('%', #{resourceName}), '%')
+  	<if test="sysResourceName !=null and sysResourceName !=''">
+  		AND parent.`resource_name` LIKE CONCAT(CONCAT('%', #{sysResourceName}), '%')
   	</if>
-  	<if test="resourcePrefix != null and resourcePrefix !=''">
-  		AND parent.`resource_prefix` LIKE CONCAT(CONCAT('%', #{resourcePrefix}), '%')
+  	<if test="sysResourcePrefix != null and sysResourcePrefix !=''">
+  		AND parent.`resource_prefix` LIKE CONCAT(CONCAT('%', #{sysResourcePrefix}), '%')
   	</if>
   	<if test="resourceLink != null and resourceLink !=''">
   		AND parent.`resource_link` LIKE CONCAT(CONCAT('%', #{resourceLink}), '%')
@@ -92,11 +92,11 @@ INNER JOIN  `walkthetalktech`.`sys_resource`  child ON child.`resource_parent_id
 	<if test="id != null">
   		`id`=#{id}
   	</if>
-  	<if test="resourceName !=null and resourceName !=''">
-  		AND `resource_name` LIKE CONCAT(CONCAT('%', #{resourceName}), '%')
+  	<if test="sysResourceName !=null and sysResourceName !=''">
+  		AND `resource_name` LIKE CONCAT(CONCAT('%', #{sysResourceName}), '%')
   	</if>
-  	<if test="resourcePrefix != null and resourcePrefix !=''">
-  		AND `resource_prefix` LIKE CONCAT(CONCAT('%', #{resourcePrefix}), '%')
+  	<if test="sysResourcePrefix != null and sysResourcePrefix !=''">
+  		AND `resource_prefix` LIKE CONCAT(CONCAT('%', #{sysResourcePrefix}), '%')
   	</if>
   	<if test="resourceLink != null and resourceLink !=''">
   		AND `resource_link` LIKE CONCAT(CONCAT('%', #{resourceLink}), '%')
@@ -121,6 +121,47 @@ INNER JOIN  `walkthetalktech`.`sys_resource`  child ON child.`resource_parent_id
   	</if>
 </trim>
 </select>
+
+<select id="selectSysResourceListByRoleInfo" resultMap="baseMap" parameterType="com.walkthetalktech.authority.model.authority.RoleInfo">
+	SELECT  
+  sys_resource.`id`,
+  sys_resource.`resource_icon`,
+  sys_resource.`resource_name`,
+  sys_resource.`resource_prefix`,
+  sys_resource.`resource_link`,
+  sys_resource.`resource_type`,
+  sys_resource.`resource_sort`,
+  sys_resource.`resource_parent_id`,
+  sys_resource.`resource_description`,
+  sys_resource.`create_time` FROM
+resource_role
+INNER JOIN sys_resource ON sys_resource.`id`=resource_role.`resource_id`
+INNER JOIN role_info ON role_info.`id`=resource_role.`role_id`
+<trim prefix="where" prefixOverrides="AND |OR ">
+		<if test="id !=null">
+			role_info.`id`=#{id}
+		</if>
+  		<if test="roleName !=null">
+  			AND role_name LIKE CONCAT(CONCAT('%', #{roleName}), '%')
+  		</if>
+  		<if test="rolePrefix !=null">
+  			AND role_prefix LIKE CONCAT(CONCAT('%', #{rolePrefix}), '%')
+  		</if>
+  		<if test="roleDescription !=null">
+  			AND role_description LIKE CONCAT(CONCAT('%', #{roleDescription}), '%')
+  		</if>
+  		<if test="beginDate != null">
+  		AND `create_time` <![CDATA[ >= ]]> #{beginDate}
+  	</if>
+  	<if test="endDate != null">
+  		AND `create_time` <![CDATA[ <= ]]>#{endDate}
+  	</if>
+  	</trim>
+  	<if test="rows != null">
+  		LIMIT #{beginNum},#{rows};
+  	</if>
+  </select>
+
 <select id="selectSysResourceListByRoleIdAndSysResourceType" resultMap="baseMap" parameterType="java.util.Map">
 	SELECT 
   sys_resource.`id`,

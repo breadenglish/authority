@@ -29,8 +29,7 @@ public class RoleInfo  extends BaseModel implements Serializable {
 	private Boolean isDel;
 	
 	private List<SysResource> sysResourceList;
-	
-	
+
 	public Long getId() {
 		return id;
 	}
@@ -39,8 +38,7 @@ public class RoleInfo  extends BaseModel implements Serializable {
 	public void setId(Long id) {
 		this.id = id;
 	}
-
-
+	
 	public String getRoleName() {
 		return roleName;
 	}
@@ -59,6 +57,17 @@ public class RoleInfo  extends BaseModel implements Serializable {
 	public void setRolePrefix(String rolePrefix) {
 		this.rolePrefix = rolePrefix;
 	}
+
+
+	public List<SysResource> getSysResourceList() {
+		return sysResourceList;
+	}
+
+
+	public void setSysResourceList(List<SysResource> sysResourceList) {
+		this.sysResourceList = sysResourceList;
+	}
+
 
 	public String getCreateTime() {
 		return createTime;
@@ -96,17 +105,6 @@ public class RoleInfo  extends BaseModel implements Serializable {
 	public void setIsDel(Boolean isDel) {
 		this.isDel = isDel;
 	}
-	
-
-	public List<SysResource> getSysResourceList() {
-		return sysResourceList;
-	}
-
-
-	public void setSysResourceList(List<SysResource> sysResourceList) {
-		this.sysResourceList = sysResourceList;
-	}
-
 
 	@Override
 	public String toString() {
