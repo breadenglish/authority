@@ -11,7 +11,7 @@ public interface ISysResourceService {
 
 	public List<SysResource> findSysResourceListByUserInfo(UserInfo userInfoParam,ResourceType resourceType); 
 	
-	public List<SysResource> findSysResourceListByRoleInfo(RoleInfo roleInfo);
+	public List<SysResource> findSysResourceListByRoleInfo(RoleInfo roleInfo,boolean isCascade);
 	
 	public List<SysResource> findSysResourceListBySysResource(SysResource sysResource);
 }

@@ -64,7 +64,24 @@ public class SysResourceServiceImpl implements ISysResourceService {
 	}
 
 	@Override
-	public List<SysResource> findSysResourceListByRoleInfo(RoleInfo roleInfo) {
-		return sysResourceMapper.selectSysResourceListByRoleInfo(roleInfo);
+	public List<SysResource> findSysResourceListByRoleInfo(RoleInfo roleInfo,boolean isCascade) {
+		List<SysResource> sysResourceList=sysResourceMapper.selectSysResourceListByRoleInfo(roleInfo);
+		if(isCascade){
+			List<SysResource> cascadeSysResourceList=new ArrayList<SysResource>();
+			for (int i=0;i<sysResourceList.size();i++) {
+				SysResource sysResource=sysResourceList.get(i);
+				SysResource sysResourceParam=new SysResource();
+				sysResourceParam.setResourceParentId(sysResource.getId());
+				List<SysResource> children=sysResourceMapper.selectSysResourceListBySysResource(sysResourceParam);
+				if(children.size()>0){
+					sysResource.setChildren(children);
+					cascadeSysResourceList.add(sysResource);
+				}
+			}
+			if(cascadeSysResourceList.size()>0){
+				return cascadeSysResourceList;
+			}
+		}
+		return sysResourceList;
 	}
 }
