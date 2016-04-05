@@ -5,10 +5,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.walkthetalktech.authority.annotation.CheckRoles;
 import com.walkthetalktech.authority.dao.authority.IPermissionMapper;
 import com.walkthetalktech.authority.model.authority.Permission;
-import com.walkthetalktech.authority.model.authority.SysResource;
 import com.walkthetalktech.authority.model.users.UserInfo;
 import com.walkthetalktech.authority.service.authority.IPermissionService;
 import com.walkthetalktech.authority.service.authority.ISysResourceService;

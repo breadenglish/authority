@@ -10,27 +10,106 @@
 	    <result column="resource_link" property="resourceLink" jdbcType="VARCHAR" />
 	    <result column="resource_type" property="resourceType" jdbcType="INTEGER" />
 	    <result column="resource_sort" property="resourceSort" jdbcType="INTEGER" />
+	    <result column="resource_parent_id" property="resourceParentId" jdbcType="BIGINT" />
 	    <result column="resource_description" property="resourceDescription" jdbcType="VARCHAR" />
 	    <result column="create_time" property="createTime" jdbcType="DATE" />
 	    <result column="avaiable" property="avaiable" jdbcType="BOOLEAN" />
 	    <result column="is_del" property="isDel" jdbcType="BOOLEAN" />
 	</resultMap>
 	
-	<resultMap id="menuMap" extends="baseMap" type="com.walkthetalktech.authority.model.authority.SysResource">
-		<collection property="children" resultMap="baseMap" />
+	<resultMap id="cascadeMap" extends="baseMap" type="com.walkthetalktech.authority.model.authority.SysResource">
+		<collection property="children" ofType="com.walkthetalktech.authority.model.authority.SysResource" >
+			<id column="child.id" property="id" jdbcType="BIGINT" />
+		    <result column="child.resource_name" property="sysResourceName" jdbcType="VARCHAR" />
+		    <result column="child.resource_prefix" property="sysResourcePrefix" jdbcType="VARCHAR" />
+		    <result column="child.resource_icon" property="resourceIcon" jdbcType="VARCHAR" />
+		    <result column="child.resource_link" property="resourceLink" jdbcType="VARCHAR" />
+		    <result column="child.resource_type" property="resourceType" jdbcType="INTEGER" />
+		    <result column="child.resource_sort" property="resourceSort" jdbcType="INTEGER" />
+		    <result column="child.resource_description" property="resourceDescription" jdbcType="VARCHAR" />
+		    <result column="child.create_time" property="createTime" jdbcType="DATE" />
+		    <result column="child.avaiable" property="avaiable" jdbcType="BOOLEAN" />
+		    <result column="child.is_del" property="isDel" jdbcType="BOOLEAN" />
+		</collection>
 	</resultMap>
-  	
-  	<!-- <select id="selectSysResourceListByMenuSysResource" parameterType="com.walkthetalktech.authority.model.authority.SysResource" resultMap="menuMap">
+	
+	<resultMap type="java.util.Map" id="sysResourceRoleInfoMap">
+		<result column="id" property="id" jdbcType="BIGINT" />
+		<result column="role_id" property="roleInfoId" jdbcType="BIGINT" />
+		<result column="resource_id" property="sysResourceId" jdbcType="BIGINT" />
+		<result column="permissions" property="permissions" jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<resultMap type="com.walkthetalktech.authority.model.authority.RSResource" id="rsresourceMap">
+		<id column="id" property="rsrId" />
+		<result column="role_id" property="roleInfoId" jdbcType="BIGINT" />
+		<result column="permissions" property="permissionIds" jdbcType="VARCHAR" />
+		<association property="sysResource" column="resource_id" select="selectSysResourceByPrimaryKey" />
+	</resultMap>
+	
+	<select id="selectRSResourceListByRoleInfo" resultMap="rsresourceMap" parameterType="com.walkthetalktech.authority.model.authority.RoleInfo">
+		SELECT 
+  resource_role.`id`,
+  `role_id`,
+  `resource_id`,
+  `permissions` 
+FROM
+`resource_role` 
+INNER JOIN role_info ON role_info.`id`=resource_role.`role_id`
+<trim prefix="where" prefixOverrides="AND |OR ">
+		<if test="id !=null">
+			role_info.`id`=#{id}
+		</if>
+  		<if test="roleName !=null">
+  			AND role_name LIKE CONCAT(CONCAT('%', #{roleName}), '%')
+  		</if>
+  		<if test="rolePrefix !=null">
+  			AND role_prefix LIKE CONCAT(CONCAT('%', #{rolePrefix}), '%')
+  		</if>
+  		<if test="roleDescription !=null">
+  			AND role_description LIKE CONCAT(CONCAT('%', #{roleDescription}), '%')
+  		</if>
+  		<if test="beginDate != null">
+  		AND `create_time` <![CDATA[ >= ]]> #{beginDate}
+  	</if>
+  	<if test="endDate != null">
+  		AND `create_time` <![CDATA[ <= ]]>#{endDate}
+  	</if>
+  	</trim>
+  	<if test="rows != null">
+  		LIMIT #{beginNum},#{rows};
+  	</if>
+	</select>
+<select id="selectRSResourceListByRSResource" parameterType="com.walkthetalktech.authority.model.authority.RSResource" resultMap="rsresourceMap">
+	SELECT 
+  resource_role.`id`,
+  `role_id`,
+  `resource_id`,
+  `permissions` 
+FROM
+`resource_role`
+INNER JOIN sys_resource ON sys_resource.`id`=resource_role.`resource_id`
+<trim prefix="where" prefixOverrides="AND |OR ">
+<if test="roleInfoId != null">
+role_id = #{roleInfoId}
+</if>
+<if test="sysResource.resourceParentId != null">
+AND sys_resource.`resource_parent_id` = #{sysResource.resourceParentId}
+</if>
+</trim>
+</select>
+  	<!-- <select id="selectSysResourceListCascadeBySysResource" parameterType="com.walkthetalktech.authority.model.authority.SysResource" resultMap="cascadeMap">
   		SELECT 
-  child.`resource_name`,
-  child.`resource_prefix`,
-  child.`resource_link`,
-  child.`resource_type`,
-  child.`resource_sort`,
-  child.`resource_description`,
-  child.`create_time`,
-  child.`avaiable`,
-  child.`is_del`,
+  child.`id` AS 'child.id',
+  child.`resource_name` AS 'child.resource_name',
+  child.`resource_prefix` AS 'child.resource_prefix',
+  child.`resource_link` AS 'child.resource_link',
+  child.`resource_type` AS 'child.resource_type',
+  child.`resource_sort` AS 'child.resource_sort',
+  child.`resource_description` AS 'child.resource_description',
+  child.`create_time` AS 'child.create_time',
+  child.`avaiable` AS 'child.avaiable',
+  child.`is_del` AS 'child.is_del',
   parent.`id`,
   parent.`resource_name`,
   parent.`resource_prefix`,
@@ -43,9 +122,8 @@
   parent.`is_del`
 FROM
   `walkthetalktech`.`sys_resource` parent
-INNER JOIN  `walkthetalktech`.`sys_resource`  child ON child.`resource_parent_id`=parent.`id`
+JOIN  `walkthetalktech`.`sys_resource`  child ON child.`resource_parent_id`=parent.`id`
 <trim prefix="where" prefixOverrides="AND |OR " >
-	parent.`resource_type`=1 AND child.`resource_type`=1
 	<if test="id != null">
   		AND parent.`id`=#{id}
   	</if>
@@ -72,6 +150,24 @@ INNER JOIN  `walkthetalktech`.`sys_resource`  child ON child.`resource_parent_id
   	</if>
 </trim>
   	</select> -->
+<select id="selectSysResourceByPrimaryKey" parameterType="java.lang.Long" resultMap="baseMap">
+		SELECT 
+  sys_resource.`id`,
+  sys_resource.`resource_name`,
+  sys_resource.`resource_prefix`,
+  sys_resource.`resource_icon`,
+  sys_resource.`resource_link`,
+  sys_resource.`resource_type`,
+  sys_resource.`resource_sort`,
+  sys_resource.`resource_parent_id`,
+  sys_resource.`resource_description`,
+  sys_resource.`create_time`,
+  sys_resource.`avaiable`,
+  sys_resource.`is_del`
+ FROM
+`sys_resource`
+WHERE `id`=#{sysResourceId}
+</select>
 <select id="selectSysResourceListBySysResource" parameterType="com.walkthetalktech.authority.model.authority.SysResource" resultMap="baseMap">
 	SELECT 
   sys_resource.`id`,
@@ -188,4 +284,50 @@ AND sys_resource.`resource_type` = #{sysResourceType}
 </if>
 </trim>
 </select>
+<select id="selectSysResourceIdListByRoleInfoId" parameterType="java.lang.Long" resultType="java.lang.Long">
+	SELECT resource_role.`resource_id` FROM resource_role
+WHERE resource_role.`role_id`=#{roleInfoId}
+</select>
+
+<select id="selectSysResourceRoleInfoByRoleInfoIdAndSysResourceId" resultMap="sysResourceRoleInfoMap">
+	SELECT resource_role.`id`,resource_role.`role_id`,resource_role.`resource_id`,resource_role.`permissions`
+FROM resource_role
+WHERE resource_role.`role_id`=#{0} 
+AND resource_role.`resource_id`=#{1}
+</select>
+
+<delete id="deleteSysResourceRoleInfoByRoleInfoIdAndSysResourceId" parameterType="java.lang.Long">
+	DELETE 
+FROM
+  `resource_role` 
+WHERE `id` = #{id} ;
+</delete>
+
+<insert id="insertSysResourceRoleInfoBySysResourceRoleInfo" parameterType="java.util.Map">
+	INSERT INTO `walkthetalktech`.`resource_role`
+		<trim prefix="(" suffix=")" suffixOverrides="," >
+			<if test="roleInfoId != null">
+				`role_id`,
+			</if>
+			<if test="sysResourceId != null">
+				`resource_id`,
+			</if>
+			<if test="permissions !=null and permissions !=''">
+				`permissions`
+			</if>
+		</trim>
+		<trim prefix="VALUES (" suffix=")" suffixOverrides="," >
+			<if test="roleInfoId != null">
+				#{roleInfoId},
+			</if>
+			<if test="sysResourceId != null">
+				#{sysResourceId},
+			</if>
+			<if test="permissions !=null and permissions !=''">
+				#{permissions}
+			</if>
+		</trim>;
+</insert>
+
+
 </mapper>

@@ -10,9 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import com.walkthetalktech.authority.annotation.CheckPermissions;
 import com.walkthetalktech.authority.annotation.CheckRoles;
-import com.walkthetalktech.authority.model.users.UserInfo;
 
 import net.sf.json.JSONObject;
 
@@ -40,10 +38,10 @@ public class AuthorityAspect {
 		return jsonObject;
 	}
 	
-	@Around("execution(* login*(com.walkthetalktech.authority.model.users.UserInfo))&&@annotation(checkRoles)&&args(userInfo))")
-	public JSONObject checkLogin(ProceedingJoinPoint pjp,CheckRoles checkRoles,UserInfo userInfo) throws Throwable{
-		String userName=userInfo.getAccount();
-		String password=userInfo.getPassword();
+	@Around("execution(* login*())&&@annotation(checkRoles))")
+	public JSONObject checkLogin(ProceedingJoinPoint pjp,CheckRoles checkRoles) throws Throwable{
+		String userName=null;//userInfo.getAccount();
+		String password=null;//userInfo.getPassword();
 		boolean isPermission=false;
 		logger.info("AUTHORITY_SYSTEM------------------>登录权限验证");
 		Subject currentUser=SecurityUtils.getSubject();

@@ -165,5 +165,67 @@ public class SysResource extends BaseModel implements Serializable {
 		return jsonObject.toString();
 	}
 
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		SysResource other = (SysResource) obj;
+		if (id == null) {
+			if (other.id != null)
+				return false;
+		} else if (!id.equals(other.id))
+			return false;
+		if (isDel == null) {
+			if (other.isDel != null)
+				return false;
+		} else if (!isDel.equals(other.isDel))
+			return false;
+		if (resourceDescription == null) {
+			if (other.resourceDescription != null)
+				return false;
+		} else if (!resourceDescription.equals(other.resourceDescription))
+			return false;
+		if (resourceIcon == null) {
+			if (other.resourceIcon != null)
+				return false;
+		} else if (!resourceIcon.equals(other.resourceIcon))
+			return false;
+		if (resourceLink == null) {
+			if (other.resourceLink != null)
+				return false;
+		} else if (!resourceLink.equals(other.resourceLink))
+			return false;
+		if (resourceParentId == null) {
+			if (other.resourceParentId != null)
+				return false;
+		} else if (!resourceParentId.equals(other.resourceParentId))
+			return false;
+		if (resourceType == null) {
+			if (other.resourceType != null)
+				return false;
+		} else if (!resourceType.equals(other.resourceType))
+			return false;
+		if (sysResourceName == null) {
+			if (other.sysResourceName != null)
+				return false;
+		} else if (!sysResourceName.equals(other.sysResourceName))
+			return false;
+		if (sysResourcePrefix == null) {
+			if (other.sysResourcePrefix != null)
+				return false;
+		} else if (!sysResourcePrefix.equals(other.sysResourcePrefix))
+			return false;
+		return true;
+	}
+
 	
+	
+	
+	
+
+
 }

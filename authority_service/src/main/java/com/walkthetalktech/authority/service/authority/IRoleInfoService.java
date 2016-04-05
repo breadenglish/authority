@@ -22,5 +22,5 @@ public interface IRoleInfoService {
 	
 	public RoleInfo loadRoleInfoByPrimaryKey(Long roleInfoId);
 	
-	public List<JSONObject> findRoleSysResourceListByRoleInfo(RoleInfo roleInfo);
+	public List<RoleInfo> findRoleSysResourceListByRoleInfo(RoleInfo roleInfo);
 }

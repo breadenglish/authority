@@ -1,19 +1,25 @@
 package com.walkthetalktech.authority.service.authority;
 
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import com.walkthetalktech.authority.model.users.UserInfo;
 
-/*@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations={"classpath*:authority/spring/spring-mybatis.xml","classpath*:authority/spring/spring-authority.xml"})*/
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations={"classpath*:authority/spring/spring-mybatis.xml"})
 public class TestSysResourceService {
 	
-	/*@Autowired
-	private ISysResourceService sysResourceService;*/
+	@Autowired
+	private ISysResourceService sysResourceService;
 	
-	
+	@Test
 	public void testFindSysResourceByUserInfo(){
-		/*UserInfo userInfoParam=new UserInfo();
+		UserInfo userInfoParam=new UserInfo();
 		userInfoParam.setAccount("admin");
-		List<SysResource> sysResourceList=sysResourceService.findSysResourceListByUserInfo(userInfoParam, ResourceType.MENU);
-		System.out.println("查询结果:"+sysResourceList);*/
+		/*List<RSResource> sysResourceList=sysResourceService.findSysResourceListByUserInfo(userInfoParam, ResourceType.MENU);*/
+		System.out.println("查询结果:");
 	}
 }
