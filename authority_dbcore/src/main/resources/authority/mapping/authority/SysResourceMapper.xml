@@ -80,6 +80,43 @@ INNER JOIN role_info ON role_info.`id`=resource_role.`role_id`
   		LIMIT #{beginNum},#{rows};
   	</if>
 	</select>
+<select id="selectSysresourceCountBySysResource" parameterType="com.walkthetalktech.authority.model.authority.SysResource" resultType="java.lang.Integer">
+	SELECT COUNT(id)
+	FROM 
+	`sys_resource` 
+<trim prefix="where" prefixOverrides="AND |OR " suffixOverrides="," >
+	<if test="id != null">
+  		`id`=#{id}
+  	</if>
+  	<if test="sysResourceName !=null and sysResourceName !=''">
+  		AND `resource_name` LIKE CONCAT(CONCAT('%', #{sysResourceName}), '%')
+  	</if>
+  	<if test="sysResourcePrefix != null and sysResourcePrefix !=''">
+  		AND `resource_prefix` LIKE CONCAT(CONCAT('%', #{sysResourcePrefix}), '%')
+  	</if>
+  	<if test="resourceLink != null and resourceLink !=''">
+  		AND `resource_link` LIKE CONCAT(CONCAT('%', #{resourceLink}), '%')
+  	</if>
+  	<if test="resourceDescription != null and resourceDescription !=''">
+  		AND `resource_description` LIKE CONCAT(CONCAT('%', #{resourceDescription}), '%')
+  	</if>
+  	<if test="isDel != null">
+  		AND `is_del`=#{isDel}
+  	</if>
+  	<if test="beginDate != null">
+  		AND `create_time` <![CDATA[ >= ]]> #{beginDate}
+  	</if>
+  	<if test="endDate != null">
+  		AND `create_time` <![CDATA[ <= ]]>#{endDate}
+  	</if>
+  	<if test="resourceType != null">
+  		AND resource_type=#{resourceType}
+  	</if>
+  	<if test="resourceParentId != null">
+  		AND resource_parent_id=#{resourceParentId}
+  	</if>
+</trim>
+</select>
 <select id="selectRSResourceListByRSResource" parameterType="com.walkthetalktech.authority.model.authority.RSResource" resultMap="rsresourceMap">
 	SELECT 
   resource_role.`id`,
@@ -93,8 +130,8 @@ INNER JOIN sys_resource ON sys_resource.`id`=resource_role.`resource_id`
 <if test="roleInfoId != null">
 role_id = #{roleInfoId}
 </if>
-<if test="sysResource.resourceParentId != null">
-AND sys_resource.`resource_parent_id` = #{sysResource.resourceParentId}
+<if test="sysResource.id != null">
+AND (sys_resource.`resource_parent_id` = #{sysResource.id} OR `resource_id` = #{sysResource.id})
 </if>
 </trim>
 </select>
@@ -215,6 +252,9 @@ WHERE `id`=#{sysResourceId}
   	<if test="resourceParentId != null">
   		AND resource_parent_id=#{resourceParentId}
   	</if>
+  	<if test="rows != null">
+  		LIMIT #{beginNum},#{rows};
+  	</if>
 </trim>
 </select>
 
@@ -328,6 +368,113 @@ WHERE `id` = #{id} ;
 			</if>
 		</trim>;
 </insert>
-
-
+<insert id="insertSysResource" useGeneratedKeys="true" keyColumn="id" keyProperty="id"  parameterType="com.walkthetalktech.authority.model.authority.SysResource">
+	INSERT INTO `sys_resource`
+	<trim prefix="(" suffix=")" suffixOverrides="," >
+		<if test="sysResourceName != null and sysResourceName != ''">
+			`resource_name`,
+		</if>
+		<if test="sysResourcePrefix != null and sysResourcePrefix != ''">
+			`resource_prefix`,
+		</if>
+		<if test="resourceLink != null and resourceLink != ''">
+			`resource_link`,
+		</if>
+		<if test="resourceType != null and resourceType != ''">
+			`resource_type`,
+		</if>
+		<if test="resourceSort != null and resourceSort != ''">
+			`resource_sort`,
+		</if>
+		<if test="resourceParentId != null and resourceParentId != ''">
+			`resource_parent_id`,
+		</if>
+		<if test="resourceDescription != null and resourceDescription != ''">
+			`resource_description`,
+		</if>
+		<if test="createTime != null and createTime != ''">
+			`create_time`,
+		</if>
+		<if test="resourceIcon != null and resourceIcon != ''">
+			`resource_icon`
+		</if>
+	</trim>
+	<trim prefix="VALUES (" suffix=")" suffixOverrides="," >
+		<if test="sysResourceName != null and sysResourceName != ''">
+			#{sysResourceName},
+		</if>
+		<if test="sysResourcePrefix != null and sysResourcePrefix != ''">
+			#{sysResourcePrefix},
+		</if>
+		<if test="resourceLink != null and resourceLink != ''">
+			#{resourceLink},
+		</if>
+		<if test="resourceType != null and resourceType != ''">
+			#{resourceType},
+		</if>
+		<if test="resourceSort != null and resourceSort != ''">
+			#{resourceSort},
+		</if>
+		<if test="resourceParentId != null and resourceParentId != ''">
+			#{resourceParentId},
+		</if>
+		<if test="resourceDescription != null and resourceDescription != ''">
+			#{resourceDescription},
+		</if>
+		<if test="createTime != null and createTime != ''">
+			#{createTime},
+		</if>
+		<if test="resourceIcon != null and resourceIcon != ''">
+			#{resourceIcon}
+		</if>
+	</trim>
+	<selectKey keyProperty="id" keyColumn="id" resultType="Long" order="AFTER">
+		SELECT LAST_INSERT_ID() AS 'id';
+	</selectKey>
+</insert>
+<update id="updateSysResource" parameterType="com.walkthetalktech.authority.model.authority.SysResource">
+	UPDATE 
+  		`sys_resource`
+  	<set>
+  		<if test="sysResourceName != null and sysResourceName != ''">
+			`resource_name`=#{sysResourceName},
+		</if>
+		<if test="sysResourcePrefix != null and sysResourcePrefix != ''">
+			`resource_prefix`=#{sysResourcePrefix},
+		</if>
+		<if test="resourceLink != null and resourceLink != ''">
+			`resource_link`=#{resourceLink},
+		</if>
+		<if test="resourceType != null and resourceType != ''">
+			`resource_type`=#{resourceType},
+		</if>
+		<if test="resourceSort != null and resourceSort != ''">
+			`resource_sort`=#{resourceSort},
+		</if>
+		<if test="resourceParentId != null">
+			`resource_parent_id`=#{resourceParentId},
+		</if>
+		<if test="resourceParentId == null">
+			`resource_parent_id`=0,
+		</if>
+		<if test="resourceDescription != null and resourceDescription != ''">
+			`resource_description`=#{resourceDescription},
+		</if>
+		<if test="createTime != null and createTime != ''">
+			`create_time`=#{createTime},
+		</if>
+		<if test="resourceIcon != null and resourceIcon != ''">
+			`resource_icon`=#{resourceIcon}
+		</if>
+  	</set>
+  	<trim prefix="where" prefixOverrides="AND |OR ">
+  		id=#{id}
+  	</trim>
+</update>
+<delete id="deleteSysResourceByPrimaryKey" parameterType="java.lang.Long">
+	DELETE 
+FROM
+  `walkthetalktech`.`sys_resource` 
+WHERE `id` = #{sysResourceId} ;
+</delete>
 </mapper>

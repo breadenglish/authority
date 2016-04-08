@@ -9,6 +9,8 @@ import com.walkthetalktech.authority.model.authority.SysResource;
 import com.walkthetalktech.authority.model.users.UserInfo;
 
 public interface ISysResourceService {
+	
+	public SysResource loadSysResourceByPrimaryKey(Long sysResourceId);
 
 	public List<SysResource> findSysResourceListByUserInfo(UserInfo userInfoParam); 
 	
@@ -23,6 +25,12 @@ public interface ISysResourceService {
 	public List<Long> findSysResourceIdListByRoleInfo(RoleInfo roleInfo);
 	
 	public boolean modifyRoleResourceByRoleInfoIdAndSysResourceIds(String sysResourceIds,Long roleInfoId);
+	
+	public boolean saveSysResourceBySysResourceAndChild(SysResource sysResource,String childIdArrayString);
+	
+	public boolean removeSysResourceBySysResourceIdListString(String sysResourceIdListString);
+	
+	public Integer findSysResourceCountBySysResource(SysResource sysResourceParam);
 	
 	public List<SysResource> findSysResourceListByRoleInfoListAndSysResource(List<RoleInfo> roleInfoList,SysResource sysResourceParam);
 }

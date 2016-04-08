@@ -9,9 +9,17 @@ import com.walkthetalktech.authority.model.authority.SysResource;
 
 public interface ISysResourceMapper {
 	
+	public Long insertSysResource(SysResource sysResource);
+	
+	public Integer updateSysResource(SysResource sysResource);
+	
+	public Integer deleteSysResourceByPrimaryKey(Long sysResourceId);
+	
 	public SysResource selectSysResourceByPrimaryKey(Long sysResourceId);
 
 	public List<SysResource>  selectSysResourceListBySysResource(SysResource sysResource);
+	
+	public Integer selectSysresourceCountBySysResource(SysResource sysResource);
 	
 	public List<SysResource> selectSysResourceListByRoleIdAndSysResourceType(Map<String,Object> map);
 	

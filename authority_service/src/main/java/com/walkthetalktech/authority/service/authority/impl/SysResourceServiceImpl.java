@@ -6,6 +6,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.management.RuntimeErrorException;
+import javax.print.attribute.UnmodifiableSetException;
+
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -109,11 +113,15 @@ public class SysResourceServiceImpl implements ISysResourceService {
 		Map<Long,SysResource> sysResourceMap=new HashMap<Long,SysResource>();
 		SysResource parent=null;
 		for (SysResource sysResource : hashSysResourceList) {
-			if(null!=sysResource.getResourceParentId()&&sysResource.getResourceParentId()==0&&!sysResourceMap.containsValue(sysResource)){
+			if(null!=sysResource.getResourceParentId()&&!sysResourceMap.containsValue(sysResource)){
 				SysResource sysResourceParam=new SysResource();
 				sysResourceParam.setResourceParentId(sysResource.getId());
 				List<SysResource> children=sysResourceMapper.selectSysResourceListBySysResource(sysResourceParam);
-				sysResource.setChildren(children);
+				if(children.size()>0){
+					List<SysResource> cascadeChildren=new ArrayList<SysResource>();
+					cascadeChildren=assembleSysResourceList(children, cascadeChildren);
+					sysResource.setChildren(cascadeChildren);
+				}
 				sysResourceMap.put(sysResource.getId(), sysResource);
 				continue;
 			}else if(null!=sysResource.getResourceParentId()&&sysResourceMap.containsKey(sysResource.getResourceParentId())){
@@ -124,6 +132,9 @@ public class SysResourceServiceImpl implements ISysResourceService {
 			}
 			if(null==parent.getChildren()){
 				parent.setChildren(new ArrayList<SysResource>());
+			}
+			if(parent.getChildren().contains(sysResource)){
+				continue;
 			}
 			parent.getChildren().add(sysResource);
 			sysResourceMap.put(parent.getId(), parent);
@@ -142,20 +153,8 @@ public class SysResourceServiceImpl implements ISysResourceService {
 		}
 		List<SysResource> sysResourceList = sysResourceMapper.selectSysResourceListBySysResource(sr);
 		List<SysResource> cascadeSysResourceList = new ArrayList<SysResource>();
-		for (int i = 0; i < sysResourceList.size(); i++) {
-			SysResource sysResource = sysResourceList.get(i);
-			SysResource sysResourceParam = new SysResource();
-			sysResourceParam.setResourceParentId(sysResource.getId());
-			List<SysResource> children = sysResourceMapper.selectSysResourceListBySysResource(sysResourceParam);
-			if (children.size() > 0) {
-				sysResource.setChildren(children);
-			}
-			cascadeSysResourceList.add(sysResource);
-		}
-		if (cascadeSysResourceList.size() > 0) {
-			return cascadeSysResourceList;
-		}
-		return null;
+		cascadeSysResourceList=this.assembleSysResourceList(sysResourceList, cascadeSysResourceList);
+		return cascadeSysResourceList;
 	}
 
 	@Override
@@ -225,9 +224,109 @@ public class SysResourceServiceImpl implements ISysResourceService {
 			rsresource.setSysResource(sysResourceParam);
 			List<RSResource> rsResourceList=sysResourceMapper.selectRSResourceListByRSResource(rsresource);
 			for (RSResource rsr : rsResourceList) {
+				if(rsr.getSysResource().getResourceParentId()==0l){
+					SysResource sysResource=new SysResource();
+					sysResource.setResourceParentId(rsr.getSysResource().getId());
+					List<SysResource> children=sysResourceMapper.selectSysResourceListBySysResource(sysResource);
+					sysResourceList.addAll(children);
+					continue;
+				}
 				sysResourceList.add(rsr.getSysResource());
 			}
 		}
 		return sysResourceList;
 	}
+
+	@Override
+	public Integer findSysResourceCountBySysResource(SysResource sysResourceParam) {
+		return sysResourceMapper.selectSysresourceCountBySysResource(sysResourceParam);
+	}
+	
+	
+	private boolean findSysResourceBySysResourceAndChild(SysResource sysResource,String newChildIdArrayString){
+		if(StringUtils.isBlank(newChildIdArrayString)){
+			SysResource sysResourceParam=new SysResource();
+			sysResourceParam.setResourceParentId(sysResource.getId());
+			List<SysResource> childList=sysResourceMapper.selectSysResourceListBySysResource(sysResourceParam);
+			for (SysResource child : childList) {
+				child.setResourceParentId(0l);
+				sysResourceMapper.updateSysResource(child);
+			}
+			return true;
+		}
+		String[] newChildIdStringArray=newChildIdArrayString.split(",");
+		List<Long> newChildIdList=new ArrayList<Long>();
+		for (String newChildIdString : newChildIdStringArray) {
+			if(sysResource.getId().equals(Long.parseLong(newChildIdString))){
+				continue;
+			}
+			newChildIdList.add(Long.parseLong(newChildIdString));
+		}
+		SysResource parent=new SysResource();
+		parent.setResourceParentId(sysResource.getId());
+		List<SysResource> oldChildList=sysResourceMapper.selectSysResourceListBySysResource(parent);
+		for (SysResource oldChild : oldChildList) {
+			if(newChildIdList.contains(oldChild.getId())){
+				newChildIdList.remove(oldChild.getId());
+			}else{
+				oldChild.setResourceParentId(0l);
+				sysResourceMapper.updateSysResource(oldChild);
+			}
+		}
+		for(Long childId : newChildIdList){
+			SysResource child=sysResourceMapper.selectSysResourceByPrimaryKey(childId);
+			if(newChildIdList.contains(child.getResourceParentId())){
+				continue;
+			}
+			child.setResourceParentId(sysResource.getId());
+			sysResourceMapper.updateSysResource(child);
+		}
+		return true;
+	}
+
+	@Override
+	public boolean saveSysResourceBySysResourceAndChild(SysResource sysResource, String childIdArrayString) {
+		if(null!=sysResource.getId()&&sysResource.getId()>0){
+			if(sysResourceMapper.updateSysResource(sysResource)<=0){
+				throw new RuntimeErrorException(null, "修改失败"+sysResource);
+			}
+		}else{
+			if(sysResourceMapper.insertSysResource(sysResource)<=0){
+				throw new RuntimeErrorException(null, "添加失败"+sysResource);
+			}
+		}
+		if(sysResource.getResourceType()==1){
+			findSysResourceBySysResourceAndChild(sysResource,childIdArrayString);
+		}
+		return true;
+	}
+
+	@Override
+	public boolean removeSysResourceBySysResourceIdListString(String sysResourceIdListString) {
+		String[] sysResourceIdStringList=sysResourceIdListString.split(",");
+		for (String sysResourceIdString : sysResourceIdStringList) {
+			Long sysResourceId=Long.parseLong(sysResourceIdString);
+			SysResource sysResource=new SysResource();
+			sysResource.setResourceParentId(sysResourceId);
+			List<SysResource> children=sysResourceMapper.selectSysResourceListBySysResource(sysResource);
+			if(null!=children&&children.size()>0){
+				for (SysResource child : children) {
+					if(sysResourceMapper.deleteSysResourceByPrimaryKey(child.getId())<=0){
+						return false;
+					}
+				}
+			}
+			if(sysResourceMapper.deleteSysResourceByPrimaryKey(sysResourceId)<=0){
+				return false;
+			}
+		}
+		return true;
+	}
+
+	@Override
+	public SysResource loadSysResourceByPrimaryKey(Long sysResourceId) {
+		return sysResourceMapper.selectSysResourceByPrimaryKey(sysResourceId);
+	}
+
+	
 }
