@@ -16,6 +16,10 @@ public class DateUtils {
 		return calendar;
 	}
 	
+	public static String getDefaultCurrentTime(){
+		return getCurrentTime("yyyy-MM-dd hh:mm:ss");
+	}
+	
 	public static String getCurrentTime(String pattern){
 		sdf.applyPattern(pattern);
 		return sdf.format(calendar.getTime());
