@@ -9,4 +9,6 @@ public interface IUserInfoMapper {
 	public List<UserInfo> selectUserInfoList();
 	
 	public UserInfo selectUserInfoByUserInfo(UserInfo userInfo);
+	
+	public Integer selectUserInfoCountByUserInfo(UserInfo userInfo);
 }
